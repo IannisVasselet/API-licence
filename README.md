@@ -25,7 +25,7 @@ Cette API est conçue avec une architecture microservices et multi-tenant, utili
 
 ```bash
 # Cloner le dépôt
-git clone https://github.com/votre-organisation/licence-api.git
+git clone https://github.com/IannisVasselet/API-licence.git
 cd licence-api
 
 # Démarrer avec Docker Compose
@@ -36,7 +36,7 @@ docker-compose up -d
 
 ```bash
 # Cloner le dépôt
-git clone https://github.com/votre-organisation/licence-api.git
+git clone https://github.com/IannisVasselet/API-licence.git
 cd licence-api
 
 # Installer les dépendances
