@@ -33,7 +33,7 @@ L'installation avec Docker est la méthode la plus simple et garantit un environ
 ### Étape 1 : Cloner le dépôt
 
 ```bash
-git clone https://github.com/votre-organisation/licence-api.git
+git clone https://github.com/IannisVasselet/API-licence.git
 cd licence-api
 ```
 
@@ -73,7 +73,7 @@ Si vous préférez installer l'application sans Docker, suivez ces étapes.
 ### Étape 1 : Cloner le dépôt
 
 ```bash
-git clone https://github.com/votre-organisation/licence-api.git
+git clone https://github.com/IannisVasselet/API-licence.git
 cd licence-api
 ```
 
