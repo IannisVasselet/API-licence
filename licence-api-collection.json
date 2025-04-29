@@ -1,0 +1,220 @@
+{
+  "info": {
+    "_postman_id": "c8d5e8f2-3f9f-4d9c-a6b5-1f85b3a3e0c5",
+    "name": "API Gestion de Licences",
+    "description": "Collection pour tester l'API de gestion de licences multi-tenant.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Santé de l'API",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{apiUrl}}",
+          "host": ["{{apiUrl}}"]
+        },
+        "description": "Vérifie que l'API est en cours d'exécution."
+      },
+      "response": []
+    },
+    {
+      "name": "Administration",
+      "item": [
+        {
+          "name": "Liste des tenants",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-admin-key",
+                "value": "{{adminKey}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/tenants",
+              "host": ["{{apiUrl}}"],
+              "path": ["tenants"]
+            },
+            "description": "Récupère la liste de tous les tenants."
+          },
+          "response": []
+        },
+        {
+          "name": "Créer un tenant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "try {",
+                  "    var jsonData = pm.response.json();",
+                  "    if (jsonData.id && jsonData.apiKey) {",
+                  "        pm.environment.set(\"tenantId\", jsonData.id);",
+                  "        pm.environment.set(\"tenantApiKey\", jsonData.apiKey);",
+                  "        console.log(\"Tenant ID et API Key enregistrés dans l'environnement.\");",
+                  "    }",
+                  "} catch (error) {",
+                  "    console.error(\"Erreur lors du traitement de la réponse:\", error);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "x-admin-key",
+                "value": "{{adminKey}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Tenant de Test\"\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/tenants",
+              "host": ["{{apiUrl}}"],
+              "path": ["tenants"]
+            },
+            "description": "Crée un nouveau tenant."
+          },
+          "response": []
+        },
+        {
+          "name": "Supprimer un tenant",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-admin-key",
+                "value": "{{adminKey}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/tenants/{{tenantId}}",
+              "host": ["{{apiUrl}}"],
+              "path": ["tenants", "{{tenantId}}"]
+            },
+            "description": "Supprime un tenant spécifique."
+          },
+          "response": []
+        },
+        {
+          "name": "Test authentification admin valide",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Authentification réussie avec une clé admin valide\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.code).to.be.oneOf([200, 204]);",
+                  "    pm.expect(pm.response.status).to.not.include('error');",
+                  "});",
+                  "",
+                  "console.log(\"✅ Authentification réussie! La clé admin est valide.\");"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-admin-key",
+                "value": "{{adminKey}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/tenants",
+              "host": ["{{apiUrl}}"],
+              "path": ["tenants"]
+            },
+            "description": "Teste l'authentification avec une clé admin valide."
+          },
+          "response": []
+        },
+        {
+          "name": "Test authentification admin invalide",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Rejet correct d'une clé admin invalide\", function () {",
+                  "    pm.response.to.have.status(403);",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.expect(jsonData.error).to.include('Non autorisé');",
+                  "});",
+                  "",
+                  "console.log(\"✅ Sécurité confirmée! L'API rejette les clés invalides.\");"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-admin-key",
+                "value": "clé_invalide",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/tenants",
+              "host": ["{{apiUrl}}"],
+              "path": ["tenants"]
+            },
+            "description": "Teste l'API avec une clé admin invalide."
+          },
+          "response": []
+        }
+      ],
+      "description": "Opérations administratives qui nécessitent une clé admin."
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "apiUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "adminKey",
+      "value": "dev_admin_key",
+      "type": "string"
+    }
+  ]
+} 
